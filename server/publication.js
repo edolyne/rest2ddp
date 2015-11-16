@@ -1,7 +1,12 @@
 const JsonPath = Npm.require("jsonpath");
 const DeepDiff = Npm.require("deep-diff");
 
-publish = function (config) {
+REST2DDP.publish = function (name, config) {
+  config.publicationName = name;
+  publishResource(config);
+};
+
+publishResource = function (config) {
   check(config, Object);
   check(config.collectionName, String);
   check(config.restUrl, String);

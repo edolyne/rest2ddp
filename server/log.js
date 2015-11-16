@@ -1,10 +1,9 @@
 const config = Meteor.settings.rest2ddp;
+let verbose = false;
 
-if(!config) {
-  return;
+if(config) {
+  verbose = config.verbose;
 }
-
-const verbose = config.verbose;
 
 log = function () {
   if(verbose) {

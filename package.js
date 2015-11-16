@@ -12,9 +12,12 @@ Package.onUse(function(api) {
   api.use("check");
   api.use("http");
 
+  api.addFiles("server/_vars.js", "server");
   api.addFiles("server/log.js", "server");
   api.addFiles("server/publication.js", "server");
   api.addFiles("server/startup.js", "server");
+
+  api.export("REST2DDP", "server");
 });
 
 Npm.depends({
