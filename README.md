@@ -54,6 +54,7 @@ Put code like this in a server block:
 REST2DDP.publish("thePublication", {
   collectionName: "theCollection",
   restUrl: "https://sub.domain.com/api/v1/widgets",
+  jsonPath: "$.query.results.channel.item.forecast.*",
   secondsBetweenPolling: 5,
   headers: {
     "Authorization-Token": "123456789",
