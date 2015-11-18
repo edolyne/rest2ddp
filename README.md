@@ -31,7 +31,7 @@ like this:
         "collectionName": "theCollection",
         "restUrl": "https://sub.domain.com/api/v1/widgets",
         "jsonPath": "$.query.results.channel.item.forecast.*",
-        "secondsBetweenPolling": 5,
+        "pollInterval": 5000,
         "headers": {
           "Authorization-Token": "123456789",
           "Other-Header-Key": "Other-Header-Value"
@@ -55,7 +55,7 @@ REST2DDP.publish("thePublication", {
   collectionName: "theCollection",
   restUrl: "https://sub.domain.com/api/v1/widgets",
   jsonPath: "$.query.results.channel.item.forecast.*",
-  secondsBetweenPolling: 5,
+  pollInterval: 5000,
   headers: {
     "Authorization-Token": "123456789",
     "Other-Header-Key": "Other-Header-Value"
