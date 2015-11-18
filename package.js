@@ -1,6 +1,6 @@
 Package.describe({
   name: "newspring:rest2ddp",
-  version: "0.0.1",
+  version: "0.0.2",
   summary: "Publish a live updating DDP API for any existing REST API",
   git: "https://github.com/NewSpring/rest2ddp.git",
   documentation: "README.md"

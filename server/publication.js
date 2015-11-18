@@ -149,7 +149,6 @@ publishResource = function (config) {
       });
 
       lastResults.set(publicationName, result);
-      self.ready();
 
       if(!stop) {
         /*
@@ -161,15 +160,30 @@ publishResource = function (config) {
       }
     };
 
-    // Poll calls itself via setTimeout as long as stop is falsy
-    poll();
+    /*
+      Basically just skip these REST2DDP pubs/subs during SSR because, with 
+      network latency, they are not going to be ready anyway. Also, the context
+      under which the publications are called
+      (https://github.com/kadirahq/fast-render/blob/master/lib/server/context.js)
+      does not support .added, .ready, etc. This is the context used by
+      meteor-react-router-ssr
+      (https://github.com/thereactivestack/meteor-react-router-ssr/blob/cd3d35383c1ceb4fb3639a11a4fdc82cf4a48cd7/lib/server.jsx#L67)
+    */
+    if(self.added) {
+      // Poll calls itself via setTimeout as long as stop is falsy
+      poll();
+      self.ready();
 
-    self.onStop(() => {
-      log("Stopping publication", publicationName);
-      stop = true;
-      if(timeoutHandle) {
-        Meteor.clearTimeout(timeoutHandle);
-      }
-    });
+      self.onStop(() => {
+        log("Stopping publication", publicationName);
+        stop = true;
+        if(timeoutHandle) {
+          Meteor.clearTimeout(timeoutHandle);
+        }
+      });
+    }
+    else {
+      return [];
+    }
   });
 };
