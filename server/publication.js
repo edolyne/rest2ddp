@@ -14,7 +14,7 @@ publishResource = function (config) {
 
   const collectionName = config.collectionName;
   const publicationName = config.publicationName || collectionName;
-  const pollInterval = config.pollInterval || 10;
+  const pollInterval = config.pollInterval || 10000;
   log("Setting up", publicationName);
 
   const getId = function (index) {
@@ -156,7 +156,7 @@ publishResource = function (config) {
           setTimeout rather than setInterval ensures we don't query the endpoint
           before the previous query returns.
         */
-        timeoutHandle = Meteor.setTimeout(poll, pollInterval * 1000);
+        timeoutHandle = Meteor.setTimeout(poll, pollInterval);
       }
     };
 
