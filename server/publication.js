@@ -161,7 +161,7 @@ publishResource = function (config) {
     };
 
     /*
-      Basically just skip these REST2DDP pubs/subs during SSR because, with 
+      Basically just skip these REST2DDP pubs/subs during SSR because, with
       network latency, they are not going to be ready anyway. Also, the context
       under which the publications are called
       (https://github.com/kadirahq/fast-render/blob/master/lib/server/context.js)
@@ -182,8 +182,7 @@ publishResource = function (config) {
         }
       });
     }
-    else {
-      return [];
-    }
+
+    return [];
   });
 };
