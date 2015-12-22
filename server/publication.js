@@ -9,7 +9,8 @@ REST2DDP.publish = function (name, config) {
 publishResource = function (config) {
   check(config, Object);
   check(config.collectionName, String);
-  check(config.restUrl, String);
+  check(config.restUrl, Match.Optional(String));
+  check(config.method, Match.Optional(Function));
   // TODO check more config stuff
 
   const collectionName = config.collectionName;
@@ -29,23 +30,38 @@ publishResource = function (config) {
     let stop = false;
     let timeoutHandle = null;
 
-    const poll = () => {
+    const _fetch = () => {
       let rawResult;
       let result;
 
-      try {
-        rawResult = HTTP.get(config.restUrl, { headers: config.headers });
-      }
-      catch (e) {
-        log(e);
-        throw new Meteor.Error("HTTP-request-failed",
-          "The HTTP request failed");
+      if (!config.method && config.restUrl) {
+        try {
+          rawResult = HTTP.get(config.restUrl, { headers: config.headers });
+        }
+        catch (e) {
+          log(e);
+          throw new Meteor.Error("HTTP-request-failed",
+            "The HTTP request failed");
+        }
+
+        if (rawResult.statusCode !== 200) {
+          throw new Meteor.Error("HTTP-error-code",
+            "The HTTP request failed with status code: " + rawResult.statusCode);
+        }
+      } else if (config.method){
+        try {
+          let syncMethod = Meteor.wrapAsync(config.method)
+          rawResult = {
+            data: syncMethod()
+          }
+        }
+        catch (e) {
+          log(e);
+          throw new Meteor.Error("HTTP-request-failed",
+            "The HTTP request failed");
+        }
       }
 
-      if (rawResult.statusCode !== 200) {
-        throw new Meteor.Error("HTTP-error-code",
-          "The HTTP request failed with status code: " + rawResult.statusCode);
-      }
 
       if(config.jsonPath) {
         try {
@@ -65,6 +81,13 @@ publishResource = function (config) {
         throw new Meteor.Error("result-parse-error",
           "Couldn't parse the results");
       }
+
+      return result
+    }
+
+    const poll = () => {
+
+      let result = _fetch()
 
       var diff = DeepDiff.diff(lastResults.get(publicationName), result);
       var added = new Map();
