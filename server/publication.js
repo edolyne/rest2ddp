@@ -22,7 +22,7 @@ publishResource = function (config) {
     return `${publicationName}-${index}`;
   };
 
-  Meteor.publish(publicationName, function () {
+  Meteor.publish(publicationName, function (...args) {
     log("Starting publication", publicationName);
 
     const self = this;
@@ -30,7 +30,10 @@ publishResource = function (config) {
     let stop = false;
     let timeoutHandle = null;
 
+
     const _fetch = () => {
+
+
       let rawResult;
       let result;
 
@@ -50,12 +53,19 @@ publishResource = function (config) {
         }
       } else if (config.method){
         try {
-          let syncMethod = Meteor.wrapAsync(config.method)
+
+          // make the call sync
+          let syncMethod = Meteor.wrapAsync(config.method, self)
+          // get the data and pass args and this for this.userId
+          const _data = syncMethod(...args)
+
+
           rawResult = {
-            data: syncMethod()
+            data: _data
           }
         }
         catch (e) {
+          console.log(e)
           log(e);
           throw new Meteor.Error("HTTP-request-failed",
             "The HTTP request failed");
